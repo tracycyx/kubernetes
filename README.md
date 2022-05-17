@@ -106,4 +106,22 @@ kubectl get nodes
 kubectl get cs
 ```
 
-Have Fun!!
+##### Fix Connection issue 
+```
+[root@ip-172-31-13-98 system]#  kubectl get cs
+Warning: v1 ComponentStatus is deprecated in v1.19+
+NAME                 STATUS      MESSAGE                                                                                       ERROR
+controller-manager   Unhealthy   Get "http://127.0.0.1:10252/healthz": dial tcp 127.0.0.1:10252: connect: connection refused
+scheduler            Unhealthy   Get "http://127.0.0.1:10251/healthz": dial tcp 127.0.0.1:10251: connect: connection refused
+etcd-0               Healthy     {"health":"true"}
+**https://stackoverflow.com/questions/54608441/kubectl-connectivity-issue**
+
+vi /etc/kubernetes/manifests/kube-scheduler.yaml
+remove - --port=0     in spec>containers>command>kube-scheuler
+vi  /etc/kubernetes/manifests/kube-controller-manager.yaml
+remove - --port=0  in spec>containers?command>kube-controller-manager
+
+Then restart kubelet service 
+systemctl restart kubelet.service
+
+```
